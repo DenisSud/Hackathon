@@ -1,8 +1,8 @@
 import pandas as pd
 
-df = pd.read_excel("ecology_cleaned.xlsx")
+df = pd.read_excel("new_dataset.xlsx")
 
-arr = ["За последние 3 года фирма осуществляла выбросы CO2 (углекислого газа)?",
+first_index = ["За послеaдние 3 года фирма осуществляла выбросы CO2 (углекислого газа)?",
 "Последние 3 года фирма имела целевые уровни по потреблению энергии?",
 "Последние 3 года фирма принимала меры для повышения энергоэффективности?",
 "Улучшение систем подогрева и охлаждения",
@@ -17,19 +17,14 @@ arr = ["За последние 3 года фирма осуществляла �
 "Меры по ограничению загрязнения окружающей среды"]
 
 
-def replace_values(column):
-    return column.map({'Да': 1, 'Нет': 0}).fillna(-1).astype(int)
+sum_values = 0
+count = 0
 
+for column in first_index:
+    sum_values += df[column].apply(lambda x: x if x in [0, 1] else 0).sum()
+    count += df[column].apply(lambda x: 1 if x in [0, 1] else 0).sum()
 
-cols = []
-for i in df.columns:
-    cols.append(i.strip().lower())
+df['ecology_index'] = sum_values / count
 
-
-for column_name in arr:
-    col = column_name.strip().lower()
-    if col in cols:
-        df[column_name] = replace_values(df[column_name])
-
-
-df.to_excel("new_dataset.xlsx", index=False)
+print(df)
+    
